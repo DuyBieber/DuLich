@@ -8,31 +8,40 @@
  */
  
 /* The Nivo Slider styles */
+/* The Nivo Slider styles */
 .nivoSlider {
-	position:relative;
-	width:100%;
-	height:auto;
-	overflow: hidden;
+    position: relative;
+    width: 90%;  /* Giảm 0hiều rộng slider xuống 80% */
+    height: 70vh;  /* Giảm chiều cao slider xuống 50% chiều cao của viewport */
+    overflow: hidden;
+    margin: 0 auto;  /* Căn giữa slider trong khung hình */
 }
+
 .nivoSlider img {
-	position:absolute;
-	top:0px;
-	left:0px;
-	max-width: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;  /* Đảm bảo hình ảnh lấp đầy chiều rộng slider */
+    height: 100%;  /* Đảm bảo hình ảnh lấp đầy chiều cao slider */
+    object-fit: cover;  /* Đảm bảo hình ảnh không bị méo, cắt bỏ các phần thừa nếu cần */
 }
+
+/* Cấu hình thêm cho các phần còn lại */
 .nivo-main-image {
-	display: block !important;
-	position: relative !important; 
-	width: 100% !important;
+    display: block !important;
+    position: relative !important; 
+    width: 100% !important; /* Đảm bảo hình ảnh tự điều chỉnh chiều rộng */
+    height: 100% !important; /* Hình ảnh lấp đầy chiều cao slider */
 }
+
 
 /* If an image is wrapped in a link */
 .nivoSlider a.nivo-imageLink {
 	position:absolute;
 	top:0px;
 	left:0px;
-	width:100%;
-	height:100%;
+	width:80%;
+	height:50%;
 	border:0;
 	padding:0;
 	margin:0;
@@ -47,7 +56,7 @@
 	display:block;
 	position:absolute;
 	z-index:5;
-	height:100%;
+	height:60%;
 	top:0;
 }
 .nivo-box {

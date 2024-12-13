@@ -1,0 +1,101 @@
+/* Itinerary Header */
+
+.day-destination-header {
+    background: linear-gradient(45deg, #1aa03ee0, #007bff); /* Gradient xanh lá và xanh dương */
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.day-header {
+    font-size: 18px;
+    font-weight: bold; /* Chữ in đậm */
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+/* Itinerary Details */
+.itinerary-details {
+    display: none; /* Đặt chế độ mặc định ẩn */
+    margin-top: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.itinerary-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #ffffff;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.itinerary-description {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #343a40;
+}
+
+.itinerary-time {
+    font-size: 14px;
+    margin-bottom: 10px;
+    color: #555555;
+}
+
+.itinerary-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    margin-top: 10px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.edit-profile-container {
+    background-color: #f9f9f9;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    margin: 20px auto;
+    text-transform: uppercase;
+}
+
+.edit-profile-title {
+    text-align: center;
+    font-size: 2em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.edit-label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.edit-input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    margin-bottom: 15px;
+    font-size: 1em;
+}
+
+.edit-submit {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.edit-submit:hover {
+    background-color: #0056b3;
+}

@@ -1,0 +1,169 @@
+/* Container cho thông tin tour */
+.mda-info {
+    display: flex; /* Thiết lập chế độ flex cho phần tử cha */
+    align-items: flex-start; /* Căn chỉnh cột hình ảnh và thông tin tour */
+    margin-bottom: 30px; /* Khoảng cách dưới */
+}
+
+.mda-info-img {
+    flex: 1; /* Chiếm không gian */
+    
+    
+}
+
+.mda-info-caption {
+    flex: 1; /* Chiếm không gian */
+    left: 40px;
+}
+.mda-info-caption h2 {
+    position: relative; /* Để có thể định vị vạch ngang */
+}
+
+.mda-info-caption h2::after {
+    content: ""; /* Vạch ngang */
+    display: block;
+    height: 2px; /* Độ dày của vạch */
+    background-color: #000; /* Màu của vạch */
+    margin-top: 10px; /* Khoảng cách giữa tiêu đề và vạch */
+}
+/* Thông tin tour */
+.mda-info-caption {
+    flex: 1; /* Cột phải chiếm không gian */
+    max-width: 50%; /* Đặt chiều rộng tối đa là 50% */
+    border: 1px solid #ccc; /* Đường viền khung */
+    padding: 15px; /* Khoảng cách bên trong */
+    border-radius: 8px; /* Bo tròn các góc */
+    background-color: #f9f9f9; /* Màu nền */
+    margin-bottom: 20px; /* Khoảng cách dưới khung */
+}
+
+/* Bảng giá tour chi tiết */
+.mda-table-container {
+    width: 100%; /* Bảng chi tiết tour dài hết trang */
+    margin-top: 30px; /* Khoảng cách giữa bảng và thông tin tour */
+}
+#mda-price {
+    width: 100%; /* Đặt chiều rộng bảng là 100% */
+    border-collapse: collapse; /* Gộp các đường viền lại với nhau */
+}
+
+.mda-table-container {
+    overflow-x: auto; /* Cho phép cuộn ngang nếu bảng quá rộng */
+}
+
+.mda-table {
+    width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng */
+    min-width: 600px; /* Đặt chiều rộng tối thiểu */
+    border: 1px solid #ccc; /* Đường viền cho bảng */
+}
+
+.mda-table th, .mda-table td {
+    padding: 10px; /* Khoảng cách bên trong các ô */
+    text-align: center; /* Căn giữa nội dung trong ô */
+    border: 1px solid #ddd; /* Đường viền cho các ô */
+}
+
+.mda-table th {
+    background-color: #f2f2f2; /* Màu nền cho tiêu đề */
+    font-weight: bold; /* Đậm chữ tiêu đề */
+}
+.mda-tilte-name {
+    font-size: 24px; /* Kích thước chữ lớn hơn */
+    font-weight: bold; /* Làm cho chữ đậm */
+    text-align: center; /* Căn giữa chữ */
+    display: block; /* Để căn giữa có hiệu lực */
+    margin: 0 auto;
+    padding: 20px 40px; /* Để căn giữa khi sử dụng block */
+}
+#mda-tour .mda-price-tour-r .mda-table tr td {
+    border: 3px solid #060606d3;
+    padding: 7px 10px;
+    text-align: right;
+    
+    white-space: nowrap;
+}
+td, th {
+    line-height: 18px;
+}
+td {
+    display: table-cell;
+    vertical-align: inherit;
+    unicode-bidi: isolate;
+}
+.header-cell {
+    background-color: #f0f0f0; /* Màu xám nhạt */
+    font-weight: bold; /* Để chữ đậm hơn nếu cần */
+}
+.mda-table chitiet_gia td span {
+    background-color: #c0c0c0; /* Màu bạc */
+    padding: 5px; /* Thêm một chút padding để đẹp hơn */
+    border-radius: 4px; /* Tùy chọn: làm tròn các góc */
+}
+/* Giao diện cơ bản cho menu tài khoản */
+ul.menu-account {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+ul.menu-account li {
+    position: relative;
+   
+}
+
+.account-toggle {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+}
+
+.account-toggle:hover {
+    color: #007bff;
+}
+
+/* Định dạng cho menu thả xuống */
+.account-dropdown-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 180px;
+}
+
+.account-dropdown-menu li {
+    width: 100%;
+}
+
+.dropdown-item a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    background-color: #f9f9f9;
+}
+
+.dropdown-item a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Hiển thị menu thả xuống khi hover vào icon */
+.account-dropdown:hover .account-dropdown-menu {
+    display: block;
+}
+.mda-tilte-3 .mda-tilte-name {
+    font-size: 30px;
+    line-height: 40px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+div#MdaPrice {
+    margin-bottom: 35px;
+}

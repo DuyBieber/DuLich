@@ -1,0 +1,126 @@
+/* Global styles */
+
+
+/* Container */
+
+
+/* Title */
+.booking-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ffffff; /* Màu trắng */
+    text-transform: uppercase; /* Chữ in hoa */
+    background: linear-gradient(45deg, #1aa03ee0, #007bff); /* Gradient xanh lá và xanh dương */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* No bookings message */
+.no-bookings-message {
+    font-size: 18px;
+    color: #ff0000;
+    font-weight: bold;
+}
+
+/* Table */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table-header {
+    background: linear-gradient(45deg, #1aa03ee0, #007bff); /* Gradient xanh lá và xanh dương */
+    color: #ffffff;
+}
+
+.table-header th {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    text-align: left;
+}
+
+.booking-row {
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+}
+
+.booking-row:hover {
+    background-color: #f1f1f1;
+}
+
+.booking-row td {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+}
+
+/* Table columns */
+.booking-code-header, .tour-name-header, .departure-date-header,
+.total-price-header, .status-header, .details-header {
+    font-weight: bold;
+}
+
+.booking-code, .tour-name, .total-price, .status {
+    font-weight: normal;
+}
+
+/* Buttons */
+.cancel-button {
+    color: #ffffff;
+    background-color: #dc3545;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.cancel-button:hover {
+    background-color: #c82333;
+}
+
+.detail-button {
+    color: #ffffff;
+    background-color: #17a2b8;
+    border: none;
+    padding: 5px 10px;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.detail-button:hover {
+    background-color: #138496;
+}
+.box-container-tour .payment-options {
+    display: flex;
+    justify-content: space-between; /* Căn đều các nút */
+    gap: 10px; /* Khoảng cách giữa các nút */
+    flex-wrap: wrap;
+}
+
+.payment-option {
+    flex: 1; /* Chia đều kích thước */
+    max-width: 22%; /* Đặt kích thước tối đa cho các nút */
+    text-align: center; /* Căn giữa nội dung */
+}
+
+.payment-option .btn {
+    width: 100%; /* Đặt nút rộng bằng cột */
+    padding: 10px 15px; /* Thu nhỏ kích thước nút */
+    font-size: 14px; /* Thu nhỏ font chữ */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-text {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Khoảng cách giữa icon và text */
+}
+
+.bank-info {
+    display: none; /* Ẩn danh sách ngân hàng */
+    font-size: 14px;
+}

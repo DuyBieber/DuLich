@@ -24,4 +24,17 @@ class Category extends Model
     // Nếu bạn không muốn sử dụng các cột timestamps, thêm thuộc tính này
     protected $primaryKey = 'id';
     public $timestamps = true;
+    public function tourTypes()
+    {
+        return $this->belongsToMany(TourType::class, 'category_tour_type', 'category_id', 'tour_type_id');
+    }
+    public function tourCategories()
+    {
+        return $this->belongsToMany(Category::class, 'category_tour', 'tour_id', 'category_id');
+    }
+    public function tours() // Thêm phương thức này
+    {
+        return $this->belongsToMany(Tour::class, 'category_tour', 'category_id', 'tour_id');
+    }
+   
 }

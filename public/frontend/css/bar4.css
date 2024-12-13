@@ -1,0 +1,66 @@
+/* Global styles */
+
+
+/* Container */
+.container.booking-details {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+/* Title */
+.booking-details-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #ffffff; /* Màu trắng */
+    text-transform: uppercase; /* Chữ in hoa */
+    background: linear-gradient(45deg, #1aa03ee0, #007bff); /* Gradient xanh lá và xanh dương */
+    padding: 10px;
+    border-radius: 5px;
+}
+
+/* Table */
+.table.booking-details-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.table-striped.booking-details-table tbody tr:nth-of-type(odd) {
+    background-color: #f8f9fa;
+}
+
+.booking-details-row th,
+.booking-details-row td {
+    padding: 10px;
+    border: 1px solid #dee2e6;
+}
+
+.booking-details-header {
+    background: linear-gradient(45deg, #1aa03ee0, #007bff); /* Gradient xanh lá và xanh dương */
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.booking-details-data {
+    background-color: #ffffff;
+}
+
+/* Button */
+.btn-primary.booking-details-back-button {
+    background: linear-gradient(45deg, #1aa03ee0, #007bff); /* Gradient xanh lá và xanh dương */
+    color: #ffffff;
+    padding: 10px 20px;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-primary.booking-details-back-button:hover {
+    background-color: #0056b3;
+}

@@ -182,7 +182,7 @@ h1.logo img{
     color: red;
 }
 .box-mainmenu .line-menu {
-    border-bottom: 3px solid #0aaffd;
+    border-bottom: 3px solid #1aa03ee0;
     width: 100%;
     float: left;
     margin-top: -21px;
@@ -193,10 +193,10 @@ h1.logo img{
     float: left;
     position: relative;
     padding: 0px 16px 0px 16px;
-    background: #3e9ffd;
+    background: linear-gradient(45deg, #1aa03ee0, #007bff);
 }
 .menunav > ul > li {
-    border-left: 2px solid #058cfe;
+    border-left: 2px solid #1aa03ee0;
 }
 .menunav ul > li:first-child {
 	/*padding-left: 0;*/
@@ -331,7 +331,7 @@ h1.logo img{
     text-align: center;
 }
 .bx-fr-right .btn-red {
-    background: #3e9ffd;
+    background: linear-gradient(45deg, #1aa03ee0, #007bff);
     color: #ffffff;
     border-radius: 0;
     width: 80%;
@@ -434,7 +434,7 @@ h1.logo img{
     padding-right: 0;
 }
 .group-localtion {
-    color: #00000;
+    color: #000000;
     padding-bottom: 5px;
     /*padding-left: 5px;*/
     /*padding-right: 5px;*/
@@ -583,7 +583,7 @@ h1.logo img{
 }
 #footer {
     color: #fff;
-    background: #4080ff;
+    background: linear-gradient(45deg, #1aa03ee0, #007bff);;
     font-size: 13px;
     padding-top: 20px;
     padding-bottom: 40px;
@@ -810,7 +810,7 @@ ul.tab-dt-tour {
 ul.tab-dt-tour li {
     text-transform: uppercase;
     color: #ffffff;
-    background: #f99033;
+    background:linear-gradient(45deg, #1aa03ee0, #007bff);
     width: 33.33%;
     text-align: center;
 }
@@ -821,10 +821,10 @@ ul.tab-dt-tour li:last-child {
     border-left: 1px solid #ffffff;
 }
 ul.tab-dt-tour li:hover, ul.tab-dt-tour li:focus {
-    background: #f99033;
+    background: linear-gradient(45deg, #1aa03ee0, #007bff);
 }
 ul.tab-dt-tour li.active {
-    background: #ef0b0b;
+    background: #1aa03ee0;
 }
 ul.tab-dt-tour li a {
     color: #000;
@@ -1064,14 +1064,23 @@ ul.tab-dt-tour li a {
     margin-top: 5px;
 }
 .booktour-lichtrinh {
-    background: #ef0b0b;
-    display: block;
-    float: left;
-    color: #ffffff;
-    padding: 8px 10px;
-    width: 86px;
+    background-color: #28a745; /* Màu xanh lá cây cho nút Đặt Tour */
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 5px;
 }
-.col-dk-2 {
+.btn-view-details {
+    background-color: #007bff; /* Màu xanh dương cho nút Chi tiết */
+    
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-weight: bold;
+    display: inline-block;
+}
+.col-dk-2 {color: white;
 }
 .note-attack {
     display: block;
@@ -1278,7 +1287,7 @@ ul.tab-dt-tour li a {
 }
 .ul-right-lst-tour li a {
     font-weight: bold;
-    color: rgb(10, 89, 212);
+    color: rgb(10, 212, 27);
 }
 .box-lst-tour-sidebar i {
     color: #ef0b0b;
@@ -1290,7 +1299,7 @@ ul.tab-dt-tour li a {
     bottom: 0;
     left: 0;
     width: 100%;
-    background: #3e9ffd;
+    background: linear-gradient(45deg, #1aa03ee0, #007bff);
     height: 40px;
 }
 .hotline-footer .hf-icon {

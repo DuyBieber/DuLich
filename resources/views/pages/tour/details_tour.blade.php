@@ -1,11 +1,16 @@
-@extends('layout')
-@section('content')
-<div class="container box-container-tour">
+      @extends('layout')
+      @section('content')
+      <div class="container box-container-tour">
          <div class="row">
             <ul class="breadcrumb">
-               <li><a href="https://vietnamtravel.net.vn/vi/trang-chu.html">Trang chủ <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
-               <li><a href="https://vietnamtravel.net.vn/vi/san-pham/1-du-lich-trong-nuoc.html">Du lịch trong nước <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
-               <li class="active"><a href="https://vietnamtravel.net.vn/vi/san-pham/62-du-lich-quy-nhon-phu-yen.html">Du lịch Quy Nhơn Phú Yên</a></li>
+            <li><a href="{{ url('/') }}">Trang chủ <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                     @if($tour->tourType && $tour->tourType->category)
+                        <li><a href="#">{{ $tour->tourType->category->title }} <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                     @endif
+                     @if($tour->tourType)
+                        <li><a href="#">{{ $tour->tourType->type_name }} <i class="fa fa-angle-right" aria-hidden="true"></i></a></li>
+                     @endif
+                     <li class="active"><a href="#">{{ $tour->title_tours }}</a></li>
             </ul>
          </div>
       </div>
@@ -13,7 +18,10 @@
          <div class="row">
             <div class="col-md-8 col-xs-12">
                <div class="w100 fl">
-                  <h1 class="hone-detail-tour"><i class="fa fa-globe"></i> Tour Hot nhất Hè 2023 Quy Nhơn - Phú Yên (Xứ Nẫu đẹp nhất Việt Nam)</h1>
+               <meta name="csrf-token" content="{{ csrf_token() }}">
+                  <form action="{{ URL::to('/add-booking-ajax') }}" method="post" id="bookingForm">
+                  {{ csrf_field() }}
+                  <h1 class="hone-detail-tour"><i class="fa fa-globe"></i> {{ $tour->title_tours }}</h1>
                   <div class="b-detail-primary w100 fl">
                      <div class="w100 fl desc-dtt">
                         <p></p>
@@ -22,8 +30,7 @@
                         <div class="col-md-12 col-xs-12">
                            <div class="w100 fl bimg-dt-left">
                               <div class="box-wap-imgpr-dt">
-                                 <img alt="du lịch" src="imgs/logo-ghenh-da-dia.jpg" width="100%">
-                                 <img src="https://vietnamtravel.net.vn/assets/desktop/images/event/merry-christmas-1.png" class="img-event-giang-sinh">                                    
+                              <img alt="{{ $tour->title_tours }}" src="{{ asset('public/uploads/tours/' . $tour->image) }}" width="100%" height="70%">
                               </div>
                            </div>
                         </div>
@@ -33,34 +40,31 @@
                                  <table class="table tbct-tour">
                                     <tbody>
                                        <tr>
-                                          <td class="td-first" style="text-align: left;" >Mã Tour:</td>
-                                          <td class="td-second">QNPY 3N</td>
+                                          <td class="td-first" style="text-align: left;">Mã Tour:</td>
+                                          <td class="td-second">{{ $tour->tour_code }}</td>
                                        </tr>
                                        <tr>
                                           <td style="text-align: left;">Ngày khởi hành:</td>
-                                          <td> 
-                                             <a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html">
-                                             Hàng ngày																																											<a href="https://vietnamtravel.net.vn/vi/lich-trinh-tour/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html" class="tour-other-day" target="_blank">Xem thêm</a>
-                                             </a>
-                                          </td>
+                                          <td> {{ \Carbon\Carbon::parse(
+            $tour->departureDates->firstWhere('available_seats', '>', 0)?->departure_date 
+            ?? $tour->departureDates->first()->departure_date
+         )->format('d/m/Y') }}</td>
                                        </tr>
                                        <tr>
                                           <td style="text-align: left;">Thời gian:</td>
-                                          <td>3 Ngày</td>
+                                          <td>{{ $tour->tour_time }}</td>
                                        </tr>
                                        <tr>
                                           <td style="text-align: left;">Xuất phát:</td>
-                                          <td>Khởi hành 63 tỉnh/TP</td>
+                                          <td>{{ $tour->tour_from }}</td>
                                        </tr>
                                        <tr>
                                           <td style="text-align: left;">Điểm du lịch:</td>
-                                          <td>Du lịch Quy Nhơn Phú Yên</td>
+                                          <td>{{ $tour->tour_to }}</td>
                                        </tr>
-                                       <tr>
-                                          <td style="text-align: left;">Lịch trình tour:</td>
-                                          <td>
-                                          </td>
-                                       </tr>
+                                       <td style="text-align: left;">Số chổ:</td>
+                                       <td> {{ $tour->departureDates->firstWhere('available_seats', '>', 0)?->available_seats 
+            ?? $tour->departureDates->first()->available_seats ?? 0 }}</td>
                                     </tbody>
                                  </table>
                               </div>
@@ -68,11 +72,31 @@
                                  <div class="bprice-dt-tour">
                                     <div class="giachitu">Giá chỉ từ</div>
                                     <div class="price-dt-tour col-xs-12">
-                                       4.990.000 VNĐ                                                                                     
+                                    {{ number_format($tour->price, 0, ',', '.') }} VNĐ                                                                                 
                                     </div>
                                     <div class="clbook-dt span12">
-                                       <span class="booknow btn-dattour buy-booking-tour"><img alt="du lịch" src="https://vietnamtravel.net.vn/assets/desktop/images/btn_register_now.png" class="btn_register_now"></span>
-                                    </div>
+    <input type="hidden" value="{{ $tour->id }}" class="booking_tour_id">
+    <input type="hidden" value="{{ $tour->title_tours }}" class="booking_tour_name">
+    <input type="hidden" value="{{ asset('public/uploads/tours/' . $tour->image) }}" class="booking_tour_image">
+    <input type="hidden" value="{{ $tour->price }}" class="booking_tour_price">
+
+    @if(session()->has('customer_id'))
+        <!-- Hiển thị nút "Đặt Tour" nếu khách đã đăng nhập -->
+        <input type="button" value="Đặt Tour" 
+               class="btn btn-primary btn-sm btn-book-tour" 
+               data-id="{{ $tour->id }}" 
+               data-name="{{ $tour->title_tours }}" 
+               data-image="{{ asset('public/uploads/tours/' . $tour->image) }}" 
+               data-price="{{ $tour->price }}" 
+               data-departure_date="{{ \Carbon\Carbon::parse($tour->departureDates->first()->departure_date)->format('Y-m-d') }}">
+    @else
+        <!-- Hiển thị thông báo yêu cầu đăng nhập -->
+        <div class="alert alert-warning mt-2">
+            Vui lòng <a href="{{ route('login') }}">đăng nhập</a> hoặc <a href="{{ route('register') }}">đăng ký</a> để đặt tour.
+        </div>
+    @endif
+</div>
+
                                  </div>
                               </div>
                            </div>
@@ -84,51 +108,130 @@
                      <ul class="nav nav-tabs tab-dt-tour">
                         <li class="active"><a data-toggle="tab" href="#home">Chi tiết tour</a></li>
                         <li><a data-toggle="tab" href="#menu1">Giá - Lịch khởi hành</a></li>
-                        <li id="tit_tab_booking"><a data-toggle="tab" href="#menu2">Đặt Tour</a></li>
+                        <li id="tit_tab_booking"><a data-toggle="tab" href="#menu2">Bình luận và đánh giá</a></li>
                      </ul>
                      <div class="tab-content">
-                        <div id="home" class="tab-pane fade in active">
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em> Quy Nhơn &ndash; Mảnh đất thương nhớ.Th&agrave;nh phố thuộc tỉnh B&igrave;nh Định, nơi giao thương cảng biển quan trọng của miền Trung. Quy Nhơn l&agrave; một th&agrave;nh phố ven biển với những bờ biển đẹp như: Kỳ Co, H&ograve;n Kh&ocirc;, Trung Lương, Quy H&ograve;a&hellip; đ&acirc;y l&agrave; những nơi c&oacute; d&ograve;ng nước biển trong xanh đến tận đ&aacute;y, c&oacute; những rạn san h&ocirc; đầy m&agrave;u sắc, cũng l&agrave; những điểm tham quan bậc nhất tại v&ugrave;ng đất n&agrave;y. Đến Quy Nhơn du kh&aacute;ch sẽ được trải nghiệm cuộc sống&nbsp; y&ecirc;n b&igrave;nh của nơi đ&acirc;y, thưởng thức những m&oacute;n ăn độc đ&aacute;o của miền đất v&otilde;, được nghe những c&acirc;u từ của b&agrave;i ch&ograve;i, h&aacute;t bội sẽ l&agrave;m cho du kh&aacute;ch c&oacute; được những khoảnh khoắc đ&aacute;ng nhớ v&agrave; y&ecirc;u c&aacute;i b&igrave;nh dị ở th&agrave;nh phố Quy Nhơn nhỏ xinh n&agrave;y.</em></span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><em><img alt="" src="/media/images/Quy%20Nhon%20Phu%20Yen/du-lich-quy-nhon-kham-pha-khu-da-ngoai-trung-luong-noi-duoc-vi-von-la-dao-jeju-phien-ban-viet-nam.jpg" style="height:500px; width:1100px" /></em></span></span></p>
-                           <hr />
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong><span style="color:#FF0000">NG&Agrave;Y 1: Đ&Oacute;N KH&Aacute;CH- CITY TOUR&nbsp; &nbsp; &nbsp;</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </strong></span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">Xe v&agrave; HDV đ&oacute;n kh&aacute;ch tại s&acirc;n bay, nếu kh&aacute;ch đến sớm th&igrave; đ&oacute;n kh&aacute;ch d&ugrave;ng điểm t&acirc;m caf&eacute; (chi ph&iacute; tự t&uacute;c). S</span></span><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">au đ&oacute; gh&eacute;p đo&agrave;n đưa qu&yacute; kh&aacute;ch đi ăn trưa.&nbsp;</span></span><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">Sau bữa trưa khởi h&agrave;nh về Quy Nhơn. Tr&ecirc;n đường về gh&eacute; tham quan <span style="color:#008000"><strong>Ch&ugrave;a Thi&ecirc;n Hưng</strong>,</span> ng&ocirc;i ch&ugrave;a nổi tiếng với vẻ đẹp sơn thủy hữu t&igrave;nh v&agrave; cũng l&agrave; nơi lưu giữ <span style="color:#008000"><strong>Ngọc X&aacute; Lợi</strong></span> linh thi&ecirc;ng.&nbsp;</span></span><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">Di chuyển về Quy Nhơn l&agrave;m thủ tục nhận ph&ograve;ng kh&aacute;ch sạn v&agrave; nghỉ ngơi</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong><span style="color:#008000">14h00:</span> </strong>Đo&agrave;n khởi h&agrave;nh đi tham quan điểm đầu ti&ecirc;n <span style="color:#008000"><strong>- Khu du lịch Ghềnh R&aacute;ng, Qu&yacute; kh&aacute;ch được dạo bước tr&ecirc;n dốc Mộng Cầm, đồi Thi Nh&acirc;n, b&atilde;i tắm Ho&agrave;ng Hậu, Ti&ecirc;n Sa&nbsp;</strong></span></span></span><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">v&agrave; sống lại với những vần thơ H&agrave;n Mặc Tử c&ugrave;ng t&agrave;i nghệ của b&uacute;t lửa Dzũ Kha.</span></span></p>
-                           <p style="text-align:justify"><strong><span style="color:#008000">15h30:</span> </strong><span style="font-family:arial,helvetica,sans-serif; font-size:14px">&nbsp;Đo&agrave;n đến </span><span style="color:#008000"><strong>Th&aacute;p Đ&ocirc;i</strong></span><span style="font-family:arial,helvetica,sans-serif; font-size:14px"><span style="color:#008000">,</span> l&agrave; cụm 02 ngọn th&aacute;p Chăm được x&acirc;y duy&ecirc;n d&aacute;ng b&ecirc;n cạnh nhau nằm giữa l&ograve;ng th&agrave;nh phố.</span></p>
-                           <p style="text-align:justify"><span style="font-family:arial,helvetica,sans-serif; font-size:14px"><span style="color:#008000"><strong>16h30:</strong></span> Xe đưa đo&agrave;n tham quan <span style="color:#008000"><strong>Quảng Trường Quy Nhơn, nơi tượng đ&agrave;i Nguyễn Sinh Sắc &ndash; Nguyễn Tất Th&agrave;nh</strong></span> uy nghi tượng trưng cho t&igrave;nh cha con h&ograve;a quyện với t&igrave;nh y&ecirc;u nước v&agrave; Tham quan tự do, tắm biển ngắm ho&agrave;ng h&ocirc;n tr&ecirc;n biển Quy Nhơn.</span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong><span style="color:#008000">18h00:</span> </strong>Xe đưa qu&yacute; kh&aacute;ch ăn tối tại nh&agrave; h&agrave;ng. Với những m&oacute;n ẩm thực đặc trưng tại đất B&igrave;nh Định.&nbsp;</span></span><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">Nghỉ đ&ecirc;m kh&aacute;ch sạn tại Quy Nhơn.</span></span></p>
-                           <hr />
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><img alt="" src="/media/images/Quy%20Nhon%20Phu%20Yen/khu-du-lich-ghenh-rang-quy-nhon-viet-nam-travel.jpg" style="height:600px; width:1100px" /></span></span></p>
-                           <hr />
-                           <p style="text-align:justify"><span style="font-family:arial,helvetica,sans-serif; font-size:14px"><span style="color:#FF0000"><strong>NG&Agrave;Y 2: PH&Uacute; Y&Ecirc;N- HOA V&Agrave;NG TR&Ecirc;N CỎ XANH&nbsp; </strong>&nbsp; </span>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>07h00:</strong></span>&nbsp;Qu&yacute; kh&aacute;ch ăn điểm t&acirc;m s&aacute;ng.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>08h00:</strong></span> Đo&agrave;n khởi h&agrave;nh tham quan Ph&uacute; Y&ecirc;n.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>09h30:</strong> </span>Tham quan <strong><span style="color:#008000">Nh&agrave; thờ Mằng Lăng,</span> </strong>được thiết kế theo lối kiến tr&uacute;c Gothic với c&aacute;c họa tiết tinh xảo, một kh&aacute;m ph&aacute; mới mẻ ở đ&acirc;y l&agrave; hang th&aacute;nh đường trong l&ograve;ng quả đồi nh&acirc;n tạo, cũng l&agrave; nơi lưu giữ <span style="color:#008000"><strong>Cuốn s&aacute;ch c&oacute; in chữ Quốc ngữ đầu ti&ecirc;n của nước ta.</strong></span></span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong><span style="color:#008000">10h30:</span> </strong>Đo&agrave;n đến <span style="color:#008000"><strong>Ghềnh Đ&aacute; Đĩa</strong></span>, một thắng cảnh thi&ecirc;n nhi&ecirc;n cấp quốc gia đầy kỳ th&uacute;, tr&ocirc;ng xa như một tổ ong đen b&oacute;ng hay l&agrave; những chồng đĩa trong l&ograve; gạch dưới b&agrave;n tay sắp đặt của tạo h&oacute;a.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong><span style="color:#008000">11h30: Ăn trưa</span> </strong>tại nh&agrave; h&agrave;ng tr&ecirc;n <span style="color:#008000"><strong>đầm &Ocirc; Loan</strong> </span><strong><span style="color:#008000">c&ugrave;ng m&oacute;n s&ograve; huyết nổi tiếng.</span> </strong>Nghỉ ngơi ngắn tại nh&agrave; h&agrave;ng.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong><span style="color:#008000">13h30:</span> </strong>Khởi h&agrave;nh đến<strong> <span style="color:#008000">B&atilde;i X&eacute;p &ndash; Ghềnh &Ocirc;ng,</span> </strong>h&igrave;nh ảnh quen thuộc từ Bộ phim<strong> <span style="color:#008000">T&ocirc;i thấy hoa v&agrave;ng tr&ecirc;n cỏ xanh,</span> </strong>ấn tượng phải kể đến l&agrave; b&atilde;i cỏ rộng m&ecirc;nh m&ocirc;ng của Ghềnh &Ocirc;ng ph&iacute;a b&ecirc;n tr&ecirc;n một b&atilde;i X&eacute;p s&oacute;ng vỗ hiền h&ograve;a.</span></span></p>
-                           <hr />
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><img alt="" src="/media/images/Quy%20Nhon%20Phu%20Yen/canh-dong-chong-chong.jpg" style="height:550px; width:1100px" /></span></span></p>
-                           <hr />
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>14h30:&nbsp;</strong></span>Qu&yacute; kh&aacute;ch tham quan <span style="color:#008000"><strong>Ch&ugrave;a Thanh Lương</strong>-</span> Tiểu cảnh hồ nước nơi đ&acirc;y c&oacute; tượng Phật B&agrave; Quan &Acirc;m lớn, được tạo h&igrave;nh như đang ẩn m&igrave;nh dưới nước độc đ&aacute;o. Trước mặt tượng c&oacute; lối đi nổi tr&ecirc;n mặt nước, n&ecirc;n du kh&aacute;ch c&oacute; thể lại gần tượng hơn để chi&ecirc;m ngưỡng, chụp ảnh check-in..</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>15h30:</strong></span> H&agrave;nh tr&igrave;nh về lại Quy Nhơn. Qu&yacute; kh&aacute;ch về lại kh&aacute;ch sạn nghỉ ngơi, tự do tắm biển.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>18h00:</strong> </span>Xe v&agrave; HDV đưa đo&agrave;n đi <strong><span style="color:#008000">ăn tối tại nh&agrave; h&agrave;ng.</span>&nbsp;</strong></span></span><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">Sau bữa tối Quy Kh&aacute;ch tự do vui chơi, tham quan Quy Nhơn về đ&ecirc;m, dạo chơi trong Chợ đ&ecirc;m hoặc thưởng thức nhạc tại c&aacute;c ph&ograve;ng tr&agrave;, bar,....(chi ph&iacute; tự t&uacute;c).&nbsp;</span></span><span style="color:#008000"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong>Nghỉ đ&ecirc;m tại Quy Nhơn.</strong></span></span></span></p>
-                           <hr />
-                           <p style="text-align:justify"><span style="color:#008000"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong><img alt="" src="/media/images/Quy%20Nhon%20Phu%20Yen/ghenh_da_dia_1.jpg" style="height:600px; width:1100px" /></strong></span></span></span></p>
-                           <hr />
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong><span style="color:#FF0000">NG&Agrave;Y 3: KỲ CO- LẶN NGẮM SANHO- EO GI&Oacute;&nbsp; </span>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</strong></span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>07h00: </strong></span>Qu&yacute; kh&aacute;ch d&ugrave;ng điểm t&acirc;m s&aacute;ng.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>8h00:</strong></span> Xe v&agrave; hướng dẫn vi&ecirc;n đ&oacute;n kh&aacute;ch tại kh&aacute;ch sạn, khởi h&agrave;nh đi đảo <span style="color:#008000"><strong>Kỳ Co </strong></span>với những cảnh sắc thi&ecirc;n nhi&ecirc;n tuyệt đẹp đang đ&oacute;n chờ.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>8h30:</strong></span>&nbsp; Đến&nbsp; bến thuyền Nhơn L&yacute;, qu&yacute; kh&aacute;ch đi cano để di chuyển qua đảo <span style="color:#008000"><strong>Kỳ Co</strong></span>, với dải c&aacute;t v&agrave;ng &ocirc;m lấy biển, bọc th&agrave;nh một h&igrave;nh cung, mềm mại mềm mại như dải lụa uốn lượn, &ocirc;m trọn lấy l&agrave;n nước trong xanh tận đ&aacute;y. Tận hưởng những gi&acirc;y ph&uacute;t thư gi&atilde;n giữa m&ecirc;nh m&ocirc;ng s&oacute;ng nước.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>09h30:</strong></span> Đến nơi, Qu&yacute; kh&aacute;ch h&ograve;a m&igrave;nh v&agrave;o thi&ecirc;n nhi&ecirc;n, một b&ecirc;n l&agrave; biển nước m&agrave;u xanh lam trong vắt, một b&ecirc;n l&agrave; n&uacute;i đ&aacute; cao sừng sững. Kh&aacute;m ph&aacute; bãi cát dài mịn, khung cảnh hoang sơ đ&acirc;̀y quy&ecirc;́n rũ, đặc bi&ecirc;̣t được ch&acirc;́m phá bằng những c&ocirc;ng trình đặc sắc như <span style="color:#008000"><strong>C&acirc;̀u Y&ecirc;́n, C&acirc;̀u Trái Tim, Kỳ Co Resort,</strong>&hellip;</span> và những hang đá, su&ocirc;́i nước đẹp đ&ecirc;́n b&acirc;́t ngờ.<span style="color:#008000">&nbsp;</span></span></span><span style="color:#008000"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><strong>Qu&yacute; kh&aacute;ch c&oacute; thể mua th&ecirc;m dịch vụ Đi bộ dưới đ&aacute;y biển, Motor nước, Jetsky,&hellip; (chi ph&iacute; tự t&uacute;c)</strong></span></span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>10h30:</strong> </span><strong><span style="color:#008000">Cano đưa Qu&yacute; kh&aacute;ch ra B&atilde;i Dứa lặn ngắm san h&ocirc;,</span> </strong>khu vực n&agrave;y c&oacute; nhiều rặng san h&ocirc; đa dạng, nhiều m&agrave;u sắc, chủng loại, ngo&agrave;i ra, thi thoảng c&ograve;n c&oacute; c&aacute;c loại Cầu gai, sao biển, nhiều loại c&aacute; đầy m&agrave;u sắc.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>11h30:</strong></span> Qu&yacute; kh&aacute;ch trở lại bến thuyền tắm nước ngọt v&agrave; thưởng thức bữa trưa với c&aacute;c m&oacute;n hải sản tươi sống. Qu&yacute; kh&aacute;ch nghỉ trưa ngắn tại nh&agrave; h&agrave;ng</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>13h00:</strong></span> Đo&agrave;n kh&aacute;ch tham quan <span style="color:#008000"><strong>Eo Gi&oacute;</strong></span> một b&atilde;i biển hoang sơ dưới sự b&agrave;o m&ograve;n của nước v&agrave; gi&oacute;, tạo n&ecirc;n một eo biển tuyệt đẹp, quanh năm lộng gi&oacute;.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>14h00:</strong> </span>Tiếp tục gh&eacute; thăm <span style="color:#008000"><strong>Tịnh x&aacute; Ngọc H&ograve;a</strong> </span>&ndash; một địa điểm l&yacute; tưởng để tĩnh t&acirc;m v&agrave; thiền định &ndash; với kiến tr&uacute;c nổi bật l&agrave; tượng đ&ocirc;i Phật B&agrave; Quan &Acirc;m cao nhất Việt Nam, gồm hai tượng phật B&agrave; Quan Thế &Acirc;m, tượng hướng về ph&iacute;a Nam (Cổng ch&iacute;nh Tịnh X&aacute;) c&ograve;n được gọi l&agrave; Quan Thế &Acirc;m Kiết Tường ph&ugrave; trợ cho rừng v&agrave;ng.C&ograve;n bức tượng c&ograve;n lại l&agrave; Quan Thế &Acirc;m Nam Hải hướng ra biển được người d&acirc;n xem l&agrave; ph&ugrave; trợ cho biển bạc.</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><span style="color:#008000"><strong>15h00:</strong></span> Xe v&agrave; HDV đưa qu&yacute; kh&aacute;ch ra s&acirc;n bay, Tr&ecirc;n đường đi qu&yacute; kh&aacute;ch dừng ch&acirc;n gh&eacute; tham quan v&agrave; checkin đồi <span style="color:#008000"><strong>Đồi C&aacute;t phương Mai</strong></span> checkin. (Hiện tại đồi c&aacute;t đ&atilde; được san lấp, n&ecirc;n qu&yacute; kh&aacute;ch c&oacute; thể dừng ch&acirc;n chụp c&aacute;c đồi c&aacute;t tương tự )</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif">HDV hướng dẫn đo&agrave;n l&agrave;m thủ tục l&ecirc;n chuyến bay trở về nh&agrave;, hẹn gặp lại qu&yacute; kh&aacute;ch ở những chuyến du lịch tiếp theo c&ugrave;ng VietnamTravel</span></span></p>
-                           <p style="text-align:justify"><span style="font-size:14px"><span style="font-family:arial,helvetica,sans-serif"><img alt="" src="/media/images/Quy%20Nhon%20Phu%20Yen/den-Quy-Nhon-kham-pha-cung-duong-di-bo-ven-bien-dep-bac-nhat.jpg" style="height:550px; width:1100px" /></span></span></p>
-                           <div class="w100 fl">
+                     <div id="home" class="tab-pane fade in active">
+    <div class="itinerary">
+        @foreach($tour->itineraries->groupBy('day') as $day => $itineraries)
+            <div class="day-section">
+                <div class="day-destination-header" style="cursor: pointer;" onclick="toggleDetails('details-{{ $day }}')">
+                    <div class="day-header">Ngày {{ $day }}: 
+                        @foreach($itineraries as $itinerary)
+                            {{ $itinerary->location }} 
+                        @endforeach
+                    </div>
+                </div>
+                <div id="details-{{ $day }}" class="itinerary-details">
+                    @foreach($itineraries as $itinerary)
+                        <div class="itinerary-item">
+                            <div class="itinerary-description">
+                                {!! nl2br(e($itinerary->activity_description)) !!}
+                            </div>
+                            <div class="itinerary-time">
+                                @php
+                                    try {
+                                        $startTime = \Carbon\Carbon::createFromFormat('H:i', $itinerary->start_time)->format('H:i');
+                                        $endTime = \Carbon\Carbon::createFromFormat('H:i', $itinerary->end_time)->format('H:i');
+                                    } catch (\Exception $e) {
+                                        $startTime = 'N/A';
+                                        $endTime = 'N/A';
+                                    }
+                                @endphp
+                                {{ $startTime }} - {{ $endTime }}
+                            </div>
+                            <div class="itinerary-image">
+                                @if($itinerary->img)
+                                    <img src="{{ asset('public/uploads/itineraries/' . $itinerary->img) }}" alt="Hình ảnh lịch trình" class="itinerary-img">
+                                @endif
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endforeach
+    </div>
+</div>
+    <div id="menu1" class="tab-pane fade">
+        <div class="lichtrinhtour-show">
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="table-tr-header">
+                        <th class="thtd-code">STT</th>
+                        <th class="thtd-date">Ngày khởi hành</th>
+                        <th>Đặc điểm</th>
+                        <th>Giá từ</th>
+                        <th>Số chỗ</th>
+                        <th class="thtd-bookt">Book tour</th>
+                    </tr>
+                </thead>
+                <tbody>
+    @foreach($departureDates as $key => $departureDate)
+        <tr>
+            <td>{{ $key + 1 }}</td>
+            <td>{{ \Carbon\Carbon::parse($departureDate->departure_date)->format('d/m/Y') }}</td>
+            <td>{{ $departureDate->feature }}</td>
+            <td>
+                <span class="price-sell">{{ number_format($departureDate->price, 0, ',', '.') }} đ</span>
+            </td>
+            <td>
+                @if ($departureDate->available_seats <= 0)
+                    <span class="text-danger">Hết chỗ</span>
+                @else
+                    {{ $departureDate->available_seats }}
+                @endif
+            </td>
+            <td class="thtd-bookt">
+                <!-- Đặt Tour -->
+                @if (session()->has('customer_id'))
+                    @if ($departureDate->available_seats > 0)
+                        <span class="booktour-lichtrinh buy-booking-tour" 
+                              style="cursor:pointer;" 
+                              data-id="{{ $departureDate->tour_id }}" 
+                              data-departure_date="{{ $departureDate->id }}"
+                              data-price="{{ $departureDate->price }}">
+                            Đặt Tour
+                        </span>
+                    @else
+                        <span class="text-danger" style="pointer-events: none; opacity: 0.5;">Không thể đặt</span>
+                    @endif
+                @else
+                    <span class="text-warning">
+                        Vui lòng <a href="{{ route('login') }}">đăng nhập</a> hoặc <a href="{{ route('register') }}">đăng ký</a> để đặt tour.
+                    </span>
+                @endif
+
+                <!-- Chi tiết giá -->
+                <span class="btn-view-details" 
+                      style="cursor:pointer" 
+                      onclick="showPriceDetails({{ $departureDate->id }})">
+                    Chi tiết
+                </span>
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
+<!-- Modal Chi tiết giá -->
+<div id="priceDetailModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chi Tiết Giá</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="priceDetailContent">
+                <!-- Nội dung chi tiết giá sẽ được tải vào đây -->
+            </div>
+        </div>
+    </div>
+</div>
+
+            </table>
+        </div>
+        <div class="w100 fl">
                               <div class="row">
                                  <div class="col-xs-12 col-md-6">
                                     <div class="tit-service-attach">Giá dịch vụ bao gồm</div>
@@ -151,343 +254,169 @@
                                  </div>
                               </div>
                            </div>
-                        </div>
-                        <div id="menu1" class="tab-pane fade">
-                           <div class="lichtrinhtour-show">
-                              <table class="table table-bordered">
-                                 <tr class="table-tr-header">
-                                    <th class="thtd-code">Mã Tour</th>
-                                    <th class="thtd-destination">Nơi đến</th>
-                                    <th>Số ngày</th>
-                                    <th>Ngày khởi hành</th>
-                                    <th style="display: none;">Ngày về</th>
-                                    <th>Giá</th>
-                                    <th style="display: none;">Số chỗ</th>
-                                    <th class="thtd-bookt"></th>
-                                 </tr>
-                                 <tr class="">
-                                    <td class="thtd-code">QNPY 3N</td>
-                                    <td class="thtd-destination"><a class="aclassify-tour" href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html" target="_blank">Tour Hot nhất Hè 2023 Quy Nhơn - Phú Yên (Xứ Nẫu đẹp nhất Việt Nam)</a></td>
-                                    <td>3</td>
-                                    <td>
-                                       Hàng ngày									
-                                    </td>
-                                    <td style="display: none;">
-                                    </td>
-                                    <td>
-                                       <span class="price-sell">4.990.000 đ</span>
-                                    </td>
-                                    <td style="display: none;">10</td>
-                                    <td class="thtd-bookt"><span class="booktour-lichtrinh buy-booking-tour" style="cursor:pointer">Đặt Tour</span></td>
-                                 </tr>
-                              </table>
-                           </div>
-                        </div>
-                        <div id="menu2" class="tab-pane fade">
-                           <form method="POST" action="https://vietnamtravel.net.vn/vi/dat-tour.html" accept-charset="UTF-8" class="form-horizontal" role="form">
-                              <input name="_token" type="hidden" value="JXOFRQqHPRBem5Cx98aTYc7lioSf3WrNrDrmarU6">
-                              <div class="form-group">
-                                 <label for="" class="col-sm-3 control-label">Họ tên</label>
-                                 <div class="col-sm-9">
-                                    <input type="text" name="fullname" class="form-control" required="">
-                                 </div>
-                              </div>
-                              <div class="form-group">
-                                 <label for="" class="col-sm-3 control-label">Điện thoại</label>
-                                 <div class="col-sm-9">
-                                    <input type="text" name="phone" class="form-control" required="">
-                                 </div>
-                              </div>
-                              <div class="form-group">
-                                 <label for="" class="col-sm-3 control-label">Email</label>
-                                 <div class="col-sm-9">
-                                    <input type="email" name="email" class="form-control" required="">
-                                 </div>
-                              </div>
-                              <div class="form-group">
-                                 <label for="" class="col-sm-3 control-label">Số khách người lớn</label>
-                                 <div class="col-sm-9">
-                                    <input type="number" name="adult" class="form-control" required="">
-                                 </div>
-                              </div>
-                              <div class="form-group">
-                                 <label for="" class="col-sm-3 control-label">Số khách trẻ em</label>
-                                 <div class="col-sm-9">
-                                    <input type="number" name="children" class="form-control" >
-                                 </div>
-                              </div>
-                              <div class="form-group">
-                                 <label for="" class="col-sm-3 control-label">Ngày khởi hành</label>
-                                 <div class="col-sm-9">
-                                    <input id="start_date_book" type="text" name="start_date_book" class="form-control" >
-                                 </div>
-                              </div>
-                              <script>
-                                 $(function() {
-                                     $( "#start_date_book" ).datepicker({
-                                         //defaultDate: "+1w",
-                                         minDate: '0',
-                                         dateFormat: "dd-mm-yy",
-                                         changeMonth: true,
-                                         numberOfMonths: 1
-                                     });
-                                 });
-                              </script>
-                              <div class="form-group">
-                                 <label for="" class="col-sm-3 control-label">Tin nhắn</label>
-                                 <div class="col-sm-9">
-                                    <textarea class="form-control" name="message"></textarea>
-                                 </div>
-                              </div>
-                              <input type="hidden" name="product_id" value="470">
-                              <div class="form-group">
-                                 <div class="col-sm-offset-3 col-sm-9">
-                                    <button type="submit" class="btn btn-success">Đặt tour</button>
-                                 </div>
-                              </div>
-                           </form>
-                        </div>
-                     </div>
+    </div>
+    <div id="menu2" class="tab-pane fade">
+    <div class="col-xs-12">
+        <div class="tit-service-attach">Bình luận đánh giá</div>
+        <div id="review-form">
+            <input type="hidden" id="tour_id" value="{{ $tour->id }}">
+            <div>
+                <label for="rating">Đánh giá:</label>
+                <div id="star-rating">
+                    <span class="star" data-value="1">&#9733;</span>
+                    <span class="star" data-value="2">&#9733;</span>
+                    <span class="star" data-value="3">&#9733;</span>
+                    <span class="star" data-value="4">&#9733;</span>
+                    <span class="star" data-value="5">&#9733;</span>
+                </div>
+            </div>
+            <input type="hidden" id="rating" value="0">
+            <div>
+                <label for="comment">Bình luận:</label>
+                <textarea id="comment" rows="3" style="width:100%;"></textarea>
+            </div>
+            <button type="button" onclick="submitReview()">Gửi đánh giá</button>
+        </div>
+        <div id="review-message"></div>
+        
+        <div id="review-list">
+    <h3>Bình luận:</h3>
+    <ul id="reviews">
+    @foreach($tour->reviews as $review)
+    <li data-review-id="{{ $review->id }}" id="review-item-{{ $review->id }}">
+        <strong>{{ $review->customer->customer_name ?? 'Khách hàng' }}:</strong>
+        <span>{{ str_repeat('⭐', $review->rating) }}</span>
+        <div class="comment" data-comment-id="{{ $review->id }}">
+            <p id="review-comment-{{ $review->id }}">{{ $review->comment }}</p>
+            @if(session('customer_id') === $review->customer_id)
+            <button type="button" onclick="editReview({{ $review->id }})">Chỉnh sửa</button>
+            <button type="button" onclick="deleteReview({{ $review->id }})">Xóa</button>
+            @endif
+        </div>
+        @if($review->admin_reply)
+            <div class="admin-reply">
+                <strong>Trả lời từ Admin:</strong>
+                <p>{{ $review->admin_reply }}</p>
+            </div>
+        @endif
+    </li>
+@endforeach
+
+</ul>
+
+</div>
+
+    </div>
+</div>
+
+<style>
+    #star-rating .star {
+        font-size: 2em;
+        color: #ccc;
+        cursor: pointer;
+        transition: color 0.3s;
+    }
+    #star-rating .star.selected,
+    #star-rating .star:hover,
+    #star-rating .star:hover ~ .star {
+        color: #f5b301;
+    }
+</style>
+
+
+
+</div>
+<script>
+    function showPriceDetails(departureDateId) {
+    $.ajax({
+        url: '/get-price-details',
+        method: 'GET',
+        data: { departure_date_id: departureDateId },
+        success: function(response) {
+            $('#priceDetailContent').html(response.html);
+            $('#priceDetailModal').modal('show');
+        },
+        error: function() {
+            alert('Không thể tải chi tiết giá. Vui lòng thử lại sau.');
+        }
+    });
+}
+</script>
+<script>
+    function toggleDetails(dayId) {
+        var details = document.getElementById(dayId);
+        if (details.style.display === "none") {
+            details.style.display = "block"; // Hiện nội dung
+        } else {
+            details.style.display = "none"; // Ẩn nội dung
+        }
+    }
+</script>
+
                   </div>
                </div>
                <div class="row">
-                  <div class="col-xs-12">
-                     <div class="tit-service-attach">Bình luận chia sẻ</div>
-                     <div class="heateor_sss_sharing_container heateor_sss_horizontal_sharing" heateor-sss-data-href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html">
-                        <div class="heateor_sss_sharing_title" style="font-weight:bold">Chia sẻ bài viết lên mạng xã hội</div>
-                        <ul class="heateor_sss_sharing_ul">
-                           <a target="_blank" href="https://twitter.com/intent/tweet?text=https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html&amp;url=https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html&amp;via=TWITTER-HANDLER">
-                              <li class="heateorSssSharingRound">
-                                 <i style="width:35px;height:35px;border-radius:999px;" alt="Twitter" title="Twitter" class="heateorSssSharing heateorSssTwitterBackground" onclick="">
-                                    <ss style="display:block;border-radius:999px;" class="heateorSssSharingSvg heateorSssTwitterSvg"></ss>
-                                 </i>
-                              </li>
-                           </a>
-                           
-                        </ul>
-                        <div class="heateorSssClear"></div>
-                     </div>
-                     <p>
-                     <div style="width:100%; overflow:hidden">
-                        <div style="float: left;margin-right: 5px; position: relative; z-index: 1001; line-height: 33px">
-                           <div class="fb-like" data-href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html" data-layout="button_count" data-action="like" data-show-faces="false" data-share="false" data-colorscheme="dark"></div>
-                        </div>
-                        <div style="float: left;margin-right: 5px; position: relative; z-index: 1001; line-height: 33px">
-                           <div class="fb-share-button" data-href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html" data-layout="button_count"></div>
-                        </div>
-                        <div style="float: left;margin-right: 5px; position: relative; z-index: 1001; line-height: 55px">
-                           <div class="g-plusone" data-size="medium" data-href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html"></div>
-                        </div>
-                        <div class="zalo-share-button" data-href="" data-oaid="579745863508352884" data-layout="1" data-color="blue" data-customize=false></div>
-                     </div>
-                     </p>
-                     <p>
-                     <div class="fb-comments" data-href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html#configurator" data-numposts="10" data-width="100%" ></div>
-                     </p>
-                  </div>
+                  
                </div>
             </div>
             <div class="col-md-4 col-xs-12 bx-right-bar">
-               <div class="box-support-right">
-                  <div class="support-center">
-                     <h3 class="title-support">Hỗ trợ trực tuyến</h3>
-                     <ul>
-                        <li>
-                           <div class="lisup1"><span class="namesup">Mrs. Ngân: </span><span class="phonesup">(0913) 073 - 026</span></div>
-                           <div class="blisup2">
-                              <a href="#0913073026" class="zalo-icon"><img src="https://vietnamtravel.net.vn/assets/desktop/images/zalo.png" alt="a"></a>
-                              <a href="skype:0913073026?chat" class="skype-icon"><img src="https://vietnamtravel.net.vn/assets/desktop/images/skype.png" alt="a"></a>
-                              <a href="tel:(0913) 073 - 026" class="call-icon"><img src="https://vietnamtravel.net.vn/assets/desktop/images/call.png" alt="a"></a>
-                           </div>
-                        </li>
-                        <li>
-                           <div class="lisup1"><span class="namesup">Miss. Ngọc: </span><span class="phonesup">(098) 444 - 1944</span></div>
-                           <div class="blisup2">
-                              <a href="#0984441944" class="zalo-icon"><img src="https://vietnamtravel.net.vn/assets/desktop/images/zalo.png" alt="a"></a>
-                              <a href="skype:0913780633?chat" class="skype-icon"><img src="https://vietnamtravel.net.vn/assets/desktop/images/skype.png" alt="a"></a>
-                              <a href="tel:(098) 444 - 1944" class="call-icon"><img src="https://vietnamtravel.net.vn/assets/desktop/images/call.png" alt="a"></a>
-                           </div>
-                        </li>
-                        <li>
-                           <div class="lisup1"><span class="namesup">Miss. Hằng: </span><span class="phonesup">(0904) 577- 548</span></div>
-                           <div class="blisup2">
-                              <a href="#0904577548" class="zalo-icon"><img src="https://vietnamtravel.net.vn/assets/desktop/images/zalo.png" alt="a"></a>
-                              <a href="skype:0904577548?chat" class="skype-icon"><img src="https://vietnamtravel.net.vn/assets/desktop/images/skype.png" alt="a"></a>
-                              <a href="tel:(0904) 577- 548" class="call-icon"><img src="https://vietnamtravel.net.vn/assets/desktop/images/call.png" alt="a"></a>
-                           </div>
-                        </li>
-                     </ul>
-                  </div>
-               </div>
                <div class="w100 fl top-15 box-cldl">
-                  <div class="w100 fl tit-child-larg">
-                     <h2>Cẩm nang du lịch</h2>
-                  </div>
-                  <ul class="ul-lst-article-bar">
-                     <li><a href="https://vietnamtravel.net.vn/vi/ct/100-10-diem-den-duoc-nguoi-viet-yeu-thich-nhat-trong-nam-2018.html">10 điểm đến được người Việt yêu thích nhất trong năm 2018</a></li>
-                     <li><a href="https://vietnamtravel.net.vn/vi/ct/99-5-diem-du-lich-nuoc-ngoai-gia-ca-hop-ly-danh-cho-nguoi-viet-nam.html">5 điểm du lịch nước ngoài giá cả hợp lý dành cho người Việt Nam</a></li>
-                     <li><a href="https://vietnamtravel.net.vn/vi/ct/98-nhung-dieu-can-biet-truoc-khi-du-lich-den-sri-lanka.html">Những điều cần biết trước khi du lịch đến Sri Lanka</a></li>
-                     <li><a href="https://vietnamtravel.net.vn/vi/ct/97-nhung-dieu-luu-y-khi-di-du-lich-nhat-ban.html">Những điều lưu ý khi đi du lịch Nhật Bản</a></li>
-                     <li><a href="https://vietnamtravel.net.vn/vi/ct/96-cam-nang-di-du-lich-da-nang-tat-tan-tat-tu-a-z-vo-cung-re.html">Cẩm nang đi du lịch Đà Nẵng tất tần tật từ A -> Z vô cùng rẻ</a></li>
-                     <li><a href="https://vietnamtravel.net.vn/vi/ct/95-cam-nang-du-lich-thai-lan-nhung-dieu-ban-can-biet.html">Cẩm nang du lịch Thái Lan – Những điều bạn cần biết</a></li>
-                     <li><a href="https://vietnamtravel.net.vn/vi/ct/94-cam-nang-du-lich-bhutan-nhung-dieu-quan-trong-nhat-dinh-phai-biet.html">Cẩm nang du lịch Bhutan – Những điều quan trọng nhất định phải biết</a></li>
-                     <li><a href="https://vietnamtravel.net.vn/vi/ct/93-cam-nang-cho-chuyen-du-lich-phu-quoc-hon-dao-thien-duong-giua-long-bien-xanh.html">Cẩm nang cho chuyến du lịch Phú Quốc - Hòn đảo thiên đường giữa lòng biển xanh</a></li>
-                     <li><a href="https://vietnamtravel.net.vn/vi/ct/92-net-doc-dao-cua-lang-chai-ca-trich-phu-quoc.html">Nét độc đáo của làng chài cá trích, Phú Quốc</a></li>
-                     <li><a href="https://vietnamtravel.net.vn/vi/ct/91-kham-pha-thien-nhien-tuoi-dep-o-go-gang-tp-vung-tau.html">Khám phá thiên nhiên tươi đẹp ở Gò Găng – TP. Vũng Tàu</a></li>
-                  </ul>
+                  
                </div>
                <div class="w100 fl box-lst-tour-sidebar">
-                  <div class="w100 fl tit-child-larg">
-                     <h2>Tour Liên Quan</h2>
-                  </div>
-                  <div class="clear"></div>
-                  <ul class="ul-lst-t-right">
-                     <li>
-                        <div class="w100 fl bx-wap-pr-item" style="height: 440px;">
-                           <div class="clearfix box-wap-imgpr">
-                              <a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/471-tour-4-ngay-3-dem-di-het-20-dia-diem-hot-nhat-tai-quy-nhon-phu-yen.html">
-                                 <img src="/timthumb.php?src=/media/images/Quy%20Nhon%20Phu%20Yen/logo-quy-nhon-phu-yen.jpg&w=402&h=262&q=90" class="list-relation-pr img-default" alt="tour" >
-                                 <img src="https://vietnamtravel.net.vn/assets/desktop/images/event/merry-christmas-1.png" class="img-event-giang-sinh">                <!--<img src="/public/media/images/logo/logo-ghim-anh.jpg" class="img-ghim-anh">-->
-                              </a>
-                           </div>
-                           <div class="clear"></div>
-                           <h4><a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/471-tour-4-ngay-3-dem-di-het-20-dia-diem-hot-nhat-tai-quy-nhon-phu-yen.html">Tour 4 ngày 3 đêm đi hết 20 địa điểm “Hot” nhất tại Quy Nhơn – Phú Yên</a></h4>
-                           <div class="clear"></div>
-                           <div class="group-calendar w100 fl">
-                              <div class="col-md-6 col-xs-7 date-start">
-                                 <span class="lst-icon1"><i class="fa fa-calendar"></i> </span>
-                                 <span>
-                                 Thứ 2, Thứ 3, Thứ 4, Chủ nhật Hàng Tuần                                    </span>
-                              </div>
-                              <div class="col-md-6 col-xs-5 date-range">
-                                 <span class="lst-icon1"><i class="fa fa-clock-o"></i></span><span> 4 Ngày</span>
-                              </div>
-                           </div>
-                           <div class="group-localtion w100 fl">
-                              <div class="col-md-6 col-xs-7 map-maker">
-                                 <span class="lst-icon1"><i class="fa fa-map-marker"></i></span><span> Khởi hành 63 tỉnh/TP</span>
-                              </div>
-                              <div class="col-md-6 col-xs-5 numner-sit">
-                                 <span class="lst-icon1"><i class="fa fa-users"></i></span><span> Số chỗ: 14</span>
-                              </div>
-                           </div>
-                           <div class="note-attack"><i class="fa fa-bell" aria-hidden="true"></i> Khuyến mãi 200K cho nhóm khách 5 người trở lên</div>
-                           <div class="group-book w100 fl">
-                              <span class="price-sell">5.990.000 VNĐ </span>
-                              <a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/471-tour-4-ngay-3-dem-di-het-20-dia-diem-hot-nhat-tai-quy-nhon-phu-yen.html" class="link-book">Xem chi tiết</a>
-                           </div>
+    <div class="w100 fl tit-child-larg">
+        <h2>Tour Liên Quan</h2>
+    </div>
+    <div class="clear"></div>
+    <ul class="ul-lst-t-right">
+       @if($relatedTours->isEmpty())
+    <p>Không có tour liên quan.</p>
+@else
+    <ul class="ul-lst-t-right">
+        @foreach ($relatedTours as $relatedTour)
+            <li>
+                <div class="w100 fl bx-wap-pr-item" style="height: 440px;">
+                    <div class="clearfix box-wap-imgpr">
+                        <a href="{{ route('detail-tour', $relatedTour->slug_tours) }}">
+                            <img src="{{ asset('public/uploads/tours/' . $relatedTour->image) }}" class="list-relation-pr img-default" alt="{{ $relatedTour->title_tours }}" style="height:250px">
+                        </a>
+                    </div>
+                    <div class="clear"></div>
+                    <h4><a href="{{ route('detail-tour', $relatedTour->slug_tours) }}">{{ $relatedTour->title_tours }}</a></h4>
+                    <div class="clear"></div>
+                    <div class="group-calendar w100 fl">
+                        <div class="col-md-6 col-xs-7 date-start">
+                            <span class="lst-icon1"><i class="fa fa-calendar"></i></span>
+                            <span>{{ \Carbon\Carbon::parse($relatedTour->departure_date)->format('d/m/Y') }}</span>
                         </div>
-                     </li>
-                     <li>
-                        <div class="w100 fl bx-wap-pr-item" style="height: 440px;">
-                           <div class="clearfix box-wap-imgpr">
-                              <a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html">
-                                 <img src="/timthumb.php?src=/media/images/Quy%20Nhon%20Phu%20Yen/logo-ghenh-da-dia.jpg&w=402&h=262&q=90" class="list-relation-pr img-default" alt="tour" >
-                                 <img src="https://vietnamtravel.net.vn/assets/desktop/images/event/merry-christmas-1.png" class="img-event-giang-sinh">                <!--<img src="/public/media/images/logo/logo-ghim-anh.jpg" class="img-ghim-anh">-->
-                              </a>
-                           </div>
-                           <div class="clear"></div>
-                           <h4><a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html">Tour Hot nhất Hè 2023 Quy Nhơn - Phú Yên (Xứ Nẫu đẹp nhất Việt Nam)</a></h4>
-                           <div class="clear"></div>
-                           <div class="group-calendar w100 fl">
-                              <div class="col-md-6 col-xs-7 date-start">
-                                 <span class="lst-icon1"><i class="fa fa-calendar"></i> </span>
-                                 <span>
-                                 Hàng ngày                                    </span>
-                              </div>
-                              <div class="col-md-6 col-xs-5 date-range">
-                                 <span class="lst-icon1"><i class="fa fa-clock-o"></i></span><span> 3 Ngày</span>
-                              </div>
-                           </div>
-                           <div class="group-localtion w100 fl">
-                              <div class="col-md-6 col-xs-7 map-maker">
-                                 <span class="lst-icon1"><i class="fa fa-map-marker"></i></span><span> Khởi hành 63 tỉnh/TP</span>
-                              </div>
-                              <div class="col-md-6 col-xs-5 numner-sit">
-                                 <span class="lst-icon1"><i class="fa fa-users"></i></span><span> Số chỗ: 10</span>
-                              </div>
-                           </div>
-                           <div class="note-attack"><i class="fa fa-bell" aria-hidden="true"></i> Khuyến mãi 200K cho nhóm khách 5 người trở lên</div>
-                           <div class="group-book w100 fl">
-                              <span class="price-sell">4.990.000 VNĐ </span>
-                              <a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/470-tour-hot-nhat-he-2023-quy-nhon-phu-yen-xu-nau-dep-nhat-viet-nam.html" class="link-book">Xem chi tiết</a>
-                           </div>
+                        <div class="col-md-6 col-xs-5 date-range">
+                            <span class="lst-icon1"><i class="fa fa-clock-o"></i></span><span> {{ $relatedTour->tour_time }}</span>
                         </div>
-                     </li>
-                     <li>
-                        <div class="w100 fl bx-wap-pr-item" style="height: 440px;">
-                           <div class="clearfix box-wap-imgpr">
-                              <a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/464-du-lich-quy-nhon-phu-yen-tour-tron-goi-dac-sac-nhat.html">
-                                 <img src="/timthumb.php?src=/media/images/Quy%20Nhon%20Phu%20Yen/logo_viet-nam-travel.jpg&w=402&h=262&q=90" class="list-relation-pr img-default" alt="tour" >
-                                 <img src="https://vietnamtravel.net.vn/assets/desktop/images/event/tet.png" class="img-event-tour-tet"><img src="https://vietnamtravel.net.vn/assets/desktop/images/event/new-icon.png" class="img-event-moi">                <!--<img src="/public/media/images/logo/logo-ghim-anh.jpg" class="img-ghim-anh">-->
-                              </a>
-                           </div>
-                           <div class="clear"></div>
-                           <h4><a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/464-du-lich-quy-nhon-phu-yen-tour-tron-goi-dac-sac-nhat.html">Du lịch Quy Nhơn - Phú Yên Tour trọn gói, đặc sắc nhất</a></h4>
-                           <div class="clear"></div>
-                           <div class="group-calendar w100 fl">
-                              <div class="col-md-6 col-xs-7 date-start">
-                                 <span class="lst-icon1"><i class="fa fa-calendar"></i> </span>
-                                 <span>
-                                 Thứ 2, Thứ 3, Thứ 4 Hàng Tuần                                    </span>
-                              </div>
-                              <div class="col-md-6 col-xs-5 date-range">
-                                 <span class="lst-icon1"><i class="fa fa-clock-o"></i></span><span> 4 Ngày</span>
-                              </div>
-                           </div>
-                           <div class="group-localtion w100 fl">
-                              <div class="col-md-6 col-xs-7 map-maker">
-                                 <span class="lst-icon1"><i class="fa fa-map-marker"></i></span><span> Khởi hành từ Hà Nội - TP.HCM</span>
-                              </div>
-                              <div class="col-md-6 col-xs-5 numner-sit">
-                                 <span class="lst-icon1"><i class="fa fa-users"></i></span><span> Số chỗ: 13</span>
-                              </div>
-                           </div>
-                           <div class="note-attack"></div>
-                           <div class="group-book w100 fl">
-                              <span class="price-sell">5.590.000 VNĐ </span>
-                              <a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/464-du-lich-quy-nhon-phu-yen-tour-tron-goi-dac-sac-nhat.html" class="link-book">Xem chi tiết</a>
-                           </div>
+                    </div>
+                    <div class="group-localtion w100 fl">
+                        <div class="col-md-6 col-xs-7 map-maker">
+                            <span class="lst-icon1"><i class="fa fa-map-marker"></i></span><span> {{ $relatedTour->tour_from }}</span>
                         </div>
-                     </li>
-                     <li>
-                        <div class="w100 fl bx-wap-pr-item" style="height: 440px;">
-                           <div class="clearfix box-wap-imgpr">
-                              <a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/463-tour-du-lich-quy-nhon-3-ngay-tron-goi-dac-sac-nhat.html">
-                                 <img src="/timthumb.php?src=/media/images/Quy%20Nhon%20Phu%20Yen/thap-doi.png&w=402&h=262&q=90" class="list-relation-pr img-default" alt="tour" >
-                                 <img src="https://vietnamtravel.net.vn/assets/desktop/images/event/merry-christmas-1.png" class="img-event-giang-sinh"><img src="https://vietnamtravel.net.vn/assets/desktop/images/event/new-icon.png" class="img-event-moi">                <!--<img src="/public/media/images/logo/logo-ghim-anh.jpg" class="img-ghim-anh">-->
-                              </a>
-                           </div>
-                           <div class="clear"></div>
-                           <h4><a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/463-tour-du-lich-quy-nhon-3-ngay-tron-goi-dac-sac-nhat.html">Tour Du lịch Quy nhơn 3 ngày trọn gói, đặc sắc nhất</a></h4>
-                           <div class="clear"></div>
-                           <div class="group-calendar w100 fl">
-                              <div class="col-md-6 col-xs-7 date-start">
-                                 <span class="lst-icon1"><i class="fa fa-calendar"></i> </span>
-                                 <span>
-                                 Thứ 2, Thứ 3, Thứ 4 Hàng Tuần                                    </span>
-                              </div>
-                              <div class="col-md-6 col-xs-5 date-range">
-                                 <span class="lst-icon1"><i class="fa fa-clock-o"></i></span><span> 3 Ngày</span>
-                              </div>
-                           </div>
-                           <div class="group-localtion w100 fl">
-                              <div class="col-md-6 col-xs-7 map-maker">
-                                 <span class="lst-icon1"><i class="fa fa-map-marker"></i></span><span> Khởi hành từ Hà Nội - TP.HCM</span>
-                              </div>
-                              <div class="col-md-6 col-xs-5 numner-sit">
-                                 <span class="lst-icon1"><i class="fa fa-users"></i></span><span> Số chỗ: 22</span>
-                              </div>
-                           </div>
-                           <div class="note-attack"><i class="fa fa-bell" aria-hidden="true"></i> Chi phí đi xuồng một chiều trên sông Kut – Tham quan Hầm Hô</div>
-                           <div class="group-book w100 fl">
-                              <span class="price-sell">4.990.000 VNĐ </span>
-                              <a href="https://vietnamtravel.net.vn/vi/chi-tiet-san-pham/463-tour-du-lich-quy-nhon-3-ngay-tron-goi-dac-sac-nhat.html" class="link-book">Xem chi tiết</a>
-                           </div>
+                        <div class="col-md-6 col-xs-5 numner-sit">
+                            <span class="lst-icon1"><i class="fa fa-users"></i></span><span> {{ $relatedTour->departureDates->firstWhere('available_seats', '>', 0)?->available_seats 
+            ?? $relatedTour->departureDates->first()->available_seats ?? 0 }}</span>
                         </div>
-                     </li>
-                  </ul>
-               </div>
+                    </div>
+                    <div class="note-attack"><i class="fa fa-bell" aria-hidden="true"></i> Khuyến mãi 200K cho nhóm khách 5 người trở lên</div>
+                    <div class="group-book w100 fl">
+                        <span class="price-sell">{{ number_format($relatedTour->price, 0, ',', '.') }} VNĐ </span>
+                        <a href="{{ route('detail-tour', $relatedTour->slug_tours) }}" class="link-book">Xem chi tiết</a>
+                    </div>
+                </div>
+            </li>
+        @endforeach
+    </ul>
+@endif
+
+    </ul>
+</div>
+
+
             </div>
          </div>
       </div>

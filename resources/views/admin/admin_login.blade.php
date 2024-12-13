@@ -30,17 +30,54 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <div class="log-w3">
 <div class="w3layouts-main">
 	<h2>Đăng Nhập Admin</h2>
+    @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
 		<form action="{{URL::to('/admin-dashboard')}}" method="post">
 			{{csrf_field()}}
-			<input type="text" class="ggg" name="admin_email" placeholder="E-MAIL" required="">
-			<input type="password" class="ggg" name="admin_password" placeholder="MẬT KHẨU" required="">
+			<input type="text" class="ggg" name="admin_email" id="admin_email" placeholder="E-MAIL" required="">
+<span id="email_error" style="color: red; display: none;">Email không đúng định dạng.</span>
+<input type="password" class="ggg" name="admin_password" id="admin_password" placeholder="MẬT KHẨU" required="">
+<span id="password_error" style="color: red; display: none;">Mật khẩu phải có ít nhất 6 ký tự.</span>
 			<span><input type="checkbox" />Nhớ Mật Khẩu</span>
-			<h6><a href="#">Quên Mật Khẩu?</a></h6>
+			<h6><a href="{{ route('admin.forgotPasswordForm') }}">Quên Mật Khẩu?</a></h6>
 				<div class="clearfix"></div>
 				<input type="submit" value="Đăng Nhập" name="login">
 		</form>
 </div>
 </div>
+<script>
+    // Kiểm tra định dạng email khi nhập
+    document.getElementById("admin_email").addEventListener("input", function() {
+        const email = this.value;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailError = document.getElementById("email_error");
+
+        if (emailRegex.test(email) && email.endsWith("@gmail.com")) {
+            emailError.style.display = "none"; // Ẩn lỗi nếu đúng định dạng và là Gmail
+        } else {
+            emailError.style.display = "block"; // Hiện lỗi nếu sai định dạng hoặc không phải Gmail
+            emailError.textContent = "Email không đúng định dạng hoặc không phải email Gmail.";
+        }
+    });
+
+    // Kiểm tra độ dài mật khẩu khi nhập
+    document.getElementById("admin_password").addEventListener("input", function() {
+        const password = this.value;
+        const passwordError = document.getElementById("password_error");
+
+        if (password.length >= 6) {
+            passwordError.style.display = "none"; // Ẩn lỗi nếu mật khẩu đủ dài
+        } else {
+            passwordError.style.display = "block"; // Hiện lỗi nếu mật khẩu quá ngắn
+        }
+    });
+</script>
+
+
 <script src="{{asset('backend/js/bootstrap.js')}}"></script>
 <script src="{{asset('backend/js/jquery.dcjqaccordion.2.7.js')}}"></script>
 <script src="{{asset('backend/js/scripts.js')}}"></script>

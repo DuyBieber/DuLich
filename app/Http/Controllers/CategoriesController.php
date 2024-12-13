@@ -145,4 +145,12 @@ class CategoriesController extends Controller
         $categories->delete();
         return redirect()->route(route:'categories.index');
     }
+    public function getCategoriesWithTourTypes()
+    {
+        // Lấy tất cả danh mục kèm theo loại tour
+        $categories = Category::with('tourTypes')->get();
+
+        return view('layouts', compact('categories')); // Truyền dữ liệu sang view
+    }
+  
 }
